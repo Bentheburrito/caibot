@@ -1,7 +1,14 @@
 defmodule CAIBot do
-	use Application
+	@moduledoc false
+  use Application
 
-	def start(_, _) do
+  def start(_type, _args) do
+    children = [
+			Nosedrum.Storage.ETS,
+			{CAIBot.Consumer, name: CAIBot.Consumer}
+		]
 
-	end
+    opts = [strategy: :one_for_one, name: CAIBot.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
 end
