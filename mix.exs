@@ -22,7 +22,7 @@ defmodule CAIBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-			{:planetside_api, "~> 0.1.2"},
+			{:planetside_api, "~> 0.1.3"},
 			{:nostrum, "~> 0.4"},
 			{:nosedrum, "~> 0.3"}
     ]
