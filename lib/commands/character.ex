@@ -14,7 +14,7 @@ defmodule CAIBot.Commands.PlanetSide.Character do
   def usage, do: ["!character character_name"]
 
   @impl true
-	def description, do: "Retrieve general stats of a character."
+	def description, do: "View general stats of a character."
 
 	@impl true
   def parse_args(args), do: List.first(args)
@@ -38,8 +38,8 @@ defmodule CAIBot.Commands.PlanetSide.Character do
 				outfit_tag = character["outfit"]["alias"]
 				hours_played = times["minutes_played"] |> String.to_integer() |> div(60)
 				cur_session_login = case CAIBot.get_data(CAIData, :get_active_session, [character["character_id"]]) do
-					{:ok, session} -> session.login_timestamp * 1000
-					:none -> times["last_login"] |> String.to_integer() |> Kernel.*(1000)
+					{:ok, session} -> session.login_timestamp
+					:none -> times["last_login"] |> String.to_integer()
 				end
 				embed =
 					%Embed{}
@@ -51,7 +51,7 @@ defmodule CAIBot.Commands.PlanetSide.Character do
 					|> Embed.put_thumbnail(faction_logo)
 					#.setFooter(character.online_status > 0 ? `Online for ${sessionStamp} - ${character.character_id}` : `Offline - Last seen ${new Date(character.times.last_save * 1000).toLocaleDateString("en-US", { timeZone: timezone })} - ${character.character_id}`,
 				#character.online_status > 0 ? "https://i.imgur.com/hxZ9HC4.png" : "https://i.imgur.com/KenvqDV.png")
-					|> Embed.put_footer(online_status == "0" && "Offline - Last seen #{times["last_save"] |> String.to_integer() |> DateTime.from_unix!() |> DateTime.to_date()}" || "Online for #{DateTime.diff(DateTime.utc_now(), DateTime.from_unix!(cur_session_login))}" <> " - #{character["character_id"]}",
+					|> Embed.put_footer(online_status == "0" && "Offline - Last seen #{times["last_save"] |> String.to_integer() |> DateTime.from_unix!() |> DateTime.to_date()}" || "Online for #{Utils.time_since_epoch(cur_session_login)}" <> " - #{character["character_id"]}",
 						online_status == "0" && "https://i.imgur.com/KenvqDV.png" || "https://i.imgur.com/hxZ9HC4.png")
 
 				Api.create_message!(message.channel_id, embed: embed)

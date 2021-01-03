@@ -13,7 +13,7 @@ defmodule CAIBot.Commands.Public.Ping do
   def predicates, do: []
 
   @impl true
-  def command(msg, _args) do
-    {:ok, _msg} = Api.create_message(msg.channel_id, "Pong!")
+  def command(message, _args) do
+    {:ok, _msg} = Api.create_message(message.channel_id, "Pong!")
   end
 end
