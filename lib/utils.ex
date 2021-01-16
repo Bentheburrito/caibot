@@ -12,7 +12,7 @@ defmodule Utils do
 	end
 
 	def safe_div(a, b, options \\ [])
-	def safe_div(a, b, options) when a == "N/A" or b == "N/A", do: Keyword.get(options, :default, "N/A")
+	def safe_div(a, b, options) when not is_integer(a) or not is_integer(b), do: Keyword.get(options, :default, "N/A")
 	def safe_div(a, 0, _options), do: a
 	def safe_div(a, b, options), do: a / b |> Float.round(Keyword.get(options, :round_to, 2))
 end
