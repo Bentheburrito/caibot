@@ -17,7 +17,7 @@ defmodule CAIBot do
 	end
 
 	def get_data(module, fn_name, args) do
-	Task.Supervisor.async({CAIData.DataTasks, Application.get_env(:caibot, :data_hostname)}, module, fn_name, args)
-	|> Task.await()
+		Task.Supervisor.async({CAIData.DataTasks, Application.get_env(:caibot, :data_hostname)}, module, fn_name, args)
+		|> Task.await()
 	end
 end
