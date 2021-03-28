@@ -1,21 +1,13 @@
-# Caibot
+# Consolidation of Auraxian Information (C.A.I.) Discord Bot
+ 
+A (WIP) bot for viewing a variety of Planetside 2 stats from [Discord](https://discord.com). Invite link coming soon!
 
-**TODO: Add description**
+Commands include:
+- !character - View general character stats (name, outfit, server, etc.)
+- !stats - View character/weapon combat stats (kills, time in game, IvI score, etc.)
+- !session - View a detailed report of the character's last game session. 
+- !weapon - View general weapon information (name, reload time, etc.)
+- !outfit - View general stats and membership of an outfit.
+- !alert - Subscribe to Discord notifications for alerts during a specific time frame.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `caibot` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:caibot, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/caibot](https://hexdocs.pm/caibot).
-
+C.A.I. Bot retrieves much of its information indirectly through the [Data Manager](https://github.com/Bentheburrito/caidata).
