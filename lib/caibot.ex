@@ -5,6 +5,7 @@ defmodule CAIBot do
   def start(_type, _args) do
     children = [
 			Nosedrum.Storage.ETS,
+			CAIBot.ReactionHandler,
 			{CAIBot.Consumer, name: CAIBot.Consumer}
 		]
 
@@ -20,4 +21,18 @@ defmodule CAIBot do
 		Task.Supervisor.async({CAIData.DataTasks, Application.get_env(:caibot, :data_hostname)}, module, fn_name, args)
 		|> Task.await()
 	end
+
+	def reaction_map, do:
+		[
+			"1⃣",
+			"2⃣",
+			"3⃣",
+			"4⃣",
+			"5⃣",
+			"6⃣",
+			"7⃣",
+			"8⃣",
+			"9⃣",
+			"🔟"
+		]
 end

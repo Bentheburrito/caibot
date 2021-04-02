@@ -31,7 +31,9 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 
 	@impl true
 	def command(message, [character_name, weapon_name]) do
+
 		Api.start_typing(message.channel_id)
+
 		weapon_name_simplified = String.replace(weapon_name, [" ", "-"], "") |> String.downcase()
 		with weapon_name_matched when not is_nil(weapon_name_matched) <- Enum.find(CAIBot.get_info(:weapon), & String.replace(&1, [" ", "-"], "") |> String.downcase() |> String.contains?(weapon_name_simplified)),
 			query <- char_weapon_stats_query(character_name, weapon_name_matched),

@@ -15,6 +15,10 @@ defmodule CAIBot.Consumer do
 		if Enum.random(1..40) == 1, do: Api.create_reaction(message.channel_id, message.id, Enum.random(["thonk:381325006761754625", "🤔", "😂", "😭"]))
 	end
 
+	def handle_event({:MESSAGE_REACTION_ADD, data, _ws_state}) do
+		IO.inspect data
+	end
+
 	def handle_event({:READY, data, _ws_state}) do
 		with {:ok, module_list} <- :application.get_key(:caibot, :modules) do
 			module_list

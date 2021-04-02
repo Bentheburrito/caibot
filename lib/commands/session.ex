@@ -28,6 +28,7 @@ defmodule CAIBot.Commands.PlanetSide.Session do
 
 				top_xp_sources = if map_size(session.xp_types) > 0 do
 					Enum.sort(session.xp_types, fn {_xp_id_1, value_1}, {_xp_id_2, value_2} -> value_1 >= value_2 end)
+					|> Enum.filter(&is_map_key(experience_info, elem(&1, 0)))
 					|> Enum.take(10)
 					|> Enum.map_join("\n", fn {xp_id, value} ->
 						xp_info = experience_info[xp_id]
@@ -70,7 +71,7 @@ defmodule CAIBot.Commands.PlanetSide.Session do
 		**Vehicles Lost**: #{vehicles_lost_card}
 		**Nanites Destroyed:Used** #{session.nanites_destroyed}:#{session.nanites_lost}
 		**--==+==--**
-		**Play Time**: #{Utils.time_since_epoch(session_seconds)}
+		**Play Time**: #{Utils.format_unix_offset(session_seconds)}
 		**Last Logout**: #{session.logout_timestamp |> DateTime.from_unix!()}
 		"""
 	end
@@ -82,16 +83,16 @@ defmodule CAIBot.Commands.PlanetSide.Session do
 
 		"""
 		**HSR**: #{hsr}%
-		**Accuracy**: #{session.archived == 1 && "#{accuracy}%" || "Pending API update..."}
-		**Score**: #{session.archived == 1 && Float.round(hsr * accuracy, 2) || "Pending API update..."}
+		**Accuracy**: #{session.archived == true && "#{accuracy}%" || "Pending API update..."}
+		**Score**: #{session.archived == true && Float.round(hsr * accuracy, 2) || "Pending API update..."}
 		**--==+==--**
 		**Kills**: #{session.kills_ivi}
 		**Deaths**: #{session.deaths_ivi}
 		**KDR**: #{safe_div(session.kills_ivi, session.deaths_ivi)}
 		**KPM**: #{safe_div(session.kills_ivi * 60, session.logout_timestamp - session.login_timestamp)}
 		**--==+==--**
-		**SPK**: #{session.archived == 1 && safe_div(session.shots_fired, session.kills_ivi) || "Pending API update..."},
-		**HPK**: #{session.archived == 1 && safe_div(session.shots_hit, session.kills_ivi) || "Pending API update..."},
+		**SPK**: #{session.archived == true && safe_div(session.shots_fired, session.kills_ivi) || "Pending API update..."}
+		**HPK**: #{session.archived == true && safe_div(session.shots_hit, session.kills_ivi) || "Pending API update..."}
 		"""
 	end
 end

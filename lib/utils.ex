@@ -7,6 +7,13 @@ defmodule Utils do
 		|> Enum.join(" ")
 	end
 
+	def format_unix_offset(timestamp) do
+		dt = DateTime.from_unix!(timestamp)
+		["#{dt.day - 1}d", "#{dt.hour}h", "#{dt.minute}m", "#{dt.second}s"]
+		|> Enum.filter(& String.first(&1) != "0")
+		|> Enum.join(" ")
+	end
+
 	def grammar_possessive(string) do
 		if String.ends_with?(string, "s"), do: string <> "'", else: string <> "'s"
 	end
