@@ -5,7 +5,7 @@ defmodule CAIBot.Commands.PlanetSide.Outfit do
 
 	alias Nostrum.Api
 	alias Nostrum.Struct.Embed
-	alias PS2.API.{Query, Join}
+	alias PS2.API.{Query, Join, QueryResult}
 
 	# import Predicates, only: [ps2_outfit_name?: 1]
 	import PS2.API.QueryBuilder
@@ -34,7 +34,7 @@ defmodule CAIBot.Commands.PlanetSide.Outfit do
 	def command(message, outfit_identifier), do: do_command(message, query_outfit_with_identifier("alias_lower", String.downcase(outfit_identifier)))
 
 	defp do_command(message, %Query{} = query) do
-		with {:ok, %{"outfit_list" => [%{"name" => name, "alias" => tag, "members" => members} = outfit]}} <- PS2.API.send_query(query) do
+		with {:ok, %QueryResult{data: %{"name" => name, "alias" => tag, "members" => members} = outfit}} <- PS2.API.query_one(query) do
 			faction_id = List.first(members)["character"]["faction_id"]
 			{faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[faction_id]
 

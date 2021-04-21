@@ -15,8 +15,9 @@ defmodule CAIBot.Consumer do
 		if Enum.random(1..40) == 1, do: Api.create_reaction(message.channel_id, message.id, Enum.random(["thonk:381325006761754625", "🤔", "😂", "😭"]))
 	end
 
-	def handle_event({:MESSAGE_REACTION_ADD, data, _ws_state}) do
-		IO.inspect data
+	def handle_event({:MESSAGE_REACTION_ADD, reaction, _ws_state}) do
+		IO.inspect reaction
+		CAIBot.ReactionHandler.register_reaction(reaction)
 	end
 
 	def handle_event({:READY, data, _ws_state}) do

@@ -10,7 +10,7 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 
 	alias Nostrum.Api
 	alias Nostrum.Struct.Embed
-	alias PS2.API.{Query, Join}
+	alias PS2.API.{Query, Join, QueryResult}
 
 	import Predicates
 	import PS2.API.QueryBuilder
@@ -37,7 +37,7 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 		weapon_name_simplified = String.replace(weapon_name, [" ", "-"], "") |> String.downcase()
 		with weapon_name_matched when not is_nil(weapon_name_matched) <- Enum.find(CAIBot.get_info(:weapon), & String.replace(&1, [" ", "-"], "") |> String.downcase() |> String.contains?(weapon_name_simplified)),
 			query <- char_weapon_stats_query(character_name, weapon_name_matched),
-			{:ok, %{"character_name_list" => [%{"name" => %{"first" => name}, "w_stats" => w_stats, "w_stats_f" => w_faction_stats}]}} <- PS2.API.send_query(query),
+			{:ok, %QueryResult{data: %{"name" => %{"first" => name}, "w_stats" => w_stats, "w_stats_f" => w_faction_stats}}} <- PS2.API.query_one(query),
 			weapon_stats when weapon_stats != %{} <- build_weapon_stats(w_stats, w_faction_stats) do
 
 				{faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[List.first(w_stats)["weapon"]["faction_id"]]
@@ -70,7 +70,7 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
   def command(message, character_name) do
 		Api.start_typing(message.channel_id)
 		with query <- char_stats_query(character_name),
-			{:ok, %{"character_list" => [%{"name" => %{"first" => name}, "faction_id" => faction_id, "lt_stats" => lifetime_stats, "f_stats" => faction_stats} = character]}} <- PS2.API.send_query(query),
+			{:ok, %QueryResult{data: %{"name" => %{"first" => name}, "faction_id" => faction_id, "lt_stats" => lifetime_stats, "f_stats" => faction_stats} = character}} <- PS2.API.query_one(query),
 			character_stats when character_stats != %{} <- build_char_stats(lifetime_stats, faction_stats, Map.get(character, "shot_stats", []), Map.get(character, "weapon_shot_stats", []), Map.get(character, "weapon_f_stats", [])) do
 				{_faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[faction_id]
 				{lifetime_stats, ivi_stats} = char_stats_desc(character_stats, character)

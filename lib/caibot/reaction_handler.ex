@@ -4,6 +4,8 @@ defmodule CAIBot.ReactionHandler do
 	"""
 	use GenServer
 
+	@default_timeout 30_000
+
 	def start_link(init_state) do
 		GenServer.start_link(__MODULE__, init_state, name: __MODULE__)
 	end
@@ -15,11 +17,11 @@ defmodule CAIBot.ReactionHandler do
 
 	* `:emojis` - a list of emoji names.
 	* `:users` - a list of user ids.
-	* `:timeout` - a timeout in milliseconds, or :infinity (defaults to 30_000).
+	* `:timeout` - a timeout in milliseconds, or :infinity (defaults to #{@default_timeout}).
 	"""
-	@spec await_reaction(Nostrum.Snowflake.t(), Keyword.t() | []) :: map() | :timeout
+	@spec await_reaction(Nostrum.Snowflake.t(), Keyword.t() | []) :: {:ok, map()} | :timeout
 	def await_reaction(message_id, options \\ []) do
-		GenServer.call(__MODULE__, {:await, message_id, options})
+		GenServer.call(__MODULE__, {:await, message_id, options}, :infinity)
 	end
 
 	@doc """
@@ -35,9 +37,9 @@ defmodule CAIBot.ReactionHandler do
 	end
 
 	def handle_call({:await, message_id, options}, from, awaiting) do
-		{timeout, filters} = Keyword.pop(options, :timeout, 30_000)
+		{timeout, filters} = Keyword.pop(options, :timeout, @default_timeout)
 		if timeout != :infinity, do: Process.send_after(self(), {:timeout, {message_id, from}}, timeout)
-		{:noreply, %{awaiting | message_id => {filters, from}}}
+		{:noreply, Map.put(awaiting, message_id, {filters, from})}
 	end
 
 	def handle_cast({:new_reaction, %{message_id: message_id} = reaction}, awaiting) when is_map_key(awaiting, message_id) do
@@ -51,7 +53,7 @@ defmodule CAIBot.ReactionHandler do
 			{:noreply, awaiting}
 		end
 	end
-	def handle_cast({:new_reaction, _message_id, _emoji, _user}, awaiting), do: {:noreply, awaiting}
+	def handle_cast({:new_reaction, _reaction}, awaiting), do: {:noreply, awaiting}
 
 	def handle_info({:timeout, {message_id, from}}, awaiting) when is_map_key(awaiting, message_id) do
 		GenServer.reply(from, :timeout)

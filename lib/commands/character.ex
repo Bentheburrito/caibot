@@ -5,7 +5,7 @@ defmodule CAIBot.Commands.PlanetSide.Character do
 
 	alias Nostrum.Api
 	alias Nostrum.Struct.Embed
-	alias PS2.API.{Query, Join}
+	alias PS2.API.{Query, Join, QueryResult}
 
 	import Predicates
 	import PS2.API.QueryBuilder
@@ -31,9 +31,9 @@ defmodule CAIBot.Commands.PlanetSide.Character do
 			|> resolve("outfit,online_status,world")
 			|> join(%Join{collection: "title"} |> inject_at("title") |> show("name.en"))
 
-		case PS2.API.send_query(query) do
-			{:ok, %{"character_list" => []}} -> Api.create_message(message.channel_id, "No character found.")
-			{:ok, %{"character_list" => [%{"name" => %{"first" => name}, "times" => times, "certs" => certs, "online_status" => online_status} = character]}} ->
+		case PS2.API.query_one(query) do
+			{:ok, %QueryResult{data: []}} -> Api.create_message(message.channel_id, "No character found.")
+			{:ok, %QueryResult{data: %{"name" => %{"first" => name}, "times" => times, "certs" => certs, "online_status" => online_status} = character}} ->
 				{faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[character["faction_id"]]
 				outfit_tag = character["outfit"]["alias"]
 				hours_played = times["minutes_played"] |> String.to_integer() |> div(60)
