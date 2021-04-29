@@ -32,7 +32,7 @@ defmodule CAIBot.Commands.PlanetSide.Character do
 			|> join(%Join{collection: "title"} |> inject_at("title") |> show("name.en"))
 
 		case PS2.API.query_one(query) do
-			{:ok, %QueryResult{data: []}} -> Api.create_message(message.channel_id, "No character found.")
+			{:ok, %QueryResult{returned: 0}} -> Api.create_message(message.channel_id, "No character found.")
 			{:ok, %QueryResult{data: %{"name" => %{"first" => name}, "times" => times, "certs" => certs, "online_status" => online_status} = character}} ->
 				{faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[character["faction_id"]]
 				outfit_tag = character["outfit"]["alias"]

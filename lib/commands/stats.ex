@@ -83,8 +83,8 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 
 				Api.create_message!(message.channel_id, embed: embed)
 			else
-				{:ok, %{"character_list" => []}} -> Api.create_message(message.channel_id, "No character found.")
-				{:ok, %{"character_list" => [%{"name" => %{"first" => name}}]}} ->
+				{:ok, %QueryResult{returned: 0}} -> Api.create_message(message.channel_id, "No character found.")
+				{:ok, %QueryResult{data: %{"name" => %{"first" => name}}}} ->
 					Api.create_message(message.channel_id, "No stats for #{name} (Insufficient data.)")
 				{:error, error} ->
 					Api.create_message(message.channel_id, "An error occurred while fetching the character. Please try again in a bit (and make sure their name is spelled correctly.)")

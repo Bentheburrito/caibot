@@ -57,7 +57,7 @@ defmodule CAIBot.Commands.PlanetSide.Outfit do
 
 			Api.create_message!(message.channel_id, embed: embed)
 		else
-			{:ok, %{"outfit_list" => []}} -> Api.create_message(message.channel_id, "No outfit found.")
+			{:ok, %QueryResult{returned: 0}} -> Api.create_message(message.channel_id, "No outfit found.")
 			{:error, error} ->
 				Api.create_message(message.channel_id, "An error occurred while fetching the outfit. Please try again in a bit (and make sure the name/tag is spelled correctly.)")
 				Logger.error("Query Error for command !outfit: #{inspect error}")

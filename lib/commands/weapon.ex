@@ -36,7 +36,7 @@ defmodule CAIBot.Commands.PlanetSide.Weapon do
 			|> term("item_category_id", @excluded_item_categories, :not)
 
 		case PS2.API.query(query) do
-			{:ok, %QueryResult{data: []}} -> Api.create_message(message.channel_id, "No weapon found.")
+			{:ok, %QueryResult{returned: 0}} -> Api.create_message(message.channel_id, "No weapon found.")
 			{:ok, %QueryResult{data: weapon_list}} ->
 
 				Api.start_typing(message.channel_id)
