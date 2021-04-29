@@ -66,12 +66,17 @@ defmodule CAIBot.Commands.PlanetSide.Weapon do
 						# Send the prompt/embed with the list of found weapons.
 						%Nostrum.Struct.Message{} = prompt = Api.create_message!(message.channel_id, embed: embed)
 
+						# Have the bot react on the prompt.
+						Task.start(fn ->
+							Enum.each(Enum.take(CAIBot.reaction_map, length(weapons)), fn emoji ->
+								Api.create_reaction(message.channel_id, prompt.id, emoji)
+								Process.sleep(200)
+							end)
+						end)
+
 						# Await the author's reaction.
 						case CAIBot.ReactionHandler.await_reaction(prompt.id, users: [message.author.id]) do
 							{:ok, reaction} ->
-								# Have the bot react on the prompt.
-								# Enum.each(Enum.take(CAIBot.reaction_map, length(weapons)), &Api.create_reaction(message.channel_id, prompt.id, &1))
-
 								# Delete the prompt message.
 								Api.delete_message!(prompt)
 								IO.inspect weapon_selection_map[reaction.emoji.name]
@@ -79,7 +84,8 @@ defmodule CAIBot.Commands.PlanetSide.Weapon do
 								weapon_selection_map[reaction.emoji.name]
 
 							:timeout ->
-									nil
+								Api.create_message!(message.channel_id, "Cancelling !weapon command, user ran out of time to react.")
+								nil
 						end
 				end
 				if not is_nil(weapon_stats) do
