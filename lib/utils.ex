@@ -22,4 +22,14 @@ defmodule Utils do
 	def safe_div(a, b, options) when not is_integer(a) or not is_integer(b), do: Keyword.get(options, :default, "N/A")
 	def safe_div(a, 0, _options), do: a
 	def safe_div(a, b, options), do: a / b |> Float.round(Keyword.get(options, :round_to, 2))
+
+	def react_in_order(message, emoji_list), do: react_in_order(message.channel_id, message.id, emoji_list)
+	def react_in_order(channel_id, message_id, emoji_list) do
+		Task.start(fn ->
+			Enum.each(emoji_list, fn emoji ->
+				Nostrum.Api.create_reaction(channel_id, message_id, emoji)
+				Process.sleep(200)
+			end)
+		end)
+	end
 end

@@ -55,8 +55,8 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 				Api.create_message!(message.channel_id, embed: embed)
 		else
 			nil -> Api.create_message!(message.channel_id, "No weapon by that name.")
-			{:ok, %{"character_name_list" => []}} -> Api.create_message(message.channel_id, "No character found.")
-			{:ok, %{"character_name_list" => [%{"name" => %{"first" => name}}]}} ->
+			{:ok, %QueryResult{returned: 0}} -> Api.create_message(message.channel_id, "No character found.")
+			{:ok, %QueryResult{data: %{"name" => %{"first" => name}}}} ->
 				Api.create_message(message.channel_id, "No #{weapon_name} stats for #{name} (Insufficient data.)")
 			{:error, error} ->
 				Api.create_message(message.channel_id, "An error occurred while fetching the character/weapon. Please try again in a bit (and make sure both names are spelled correctly.)")
@@ -74,6 +74,7 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 			character_stats when character_stats != %{} <- build_char_stats(lifetime_stats, faction_stats, Map.get(character, "shot_stats", []), Map.get(character, "weapon_shot_stats", []), Map.get(character, "weapon_f_stats", [])) do
 				{_faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[faction_id]
 				{lifetime_stats, ivi_stats} = char_stats_desc(character_stats, character)
+
 				embed = %Embed{}
 				|> Embed.put_title(name)
 				|> Embed.put_field("Stats", lifetime_stats, true)

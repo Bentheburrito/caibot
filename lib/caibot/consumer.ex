@@ -16,7 +16,7 @@ defmodule CAIBot.Consumer do
 	end
 
 	def handle_event({:MESSAGE_REACTION_ADD, reaction, _ws_state}) do
-		IO.inspect reaction
+
 		CAIBot.ReactionHandler.register_reaction(reaction)
 	end
 
