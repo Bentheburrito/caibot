@@ -1,4 +1,5 @@
 %{
+  "caidata_api": {:git, "https://github.com/Bentheburrito/caidata_api.git", "f2257b43f694d6f3b8511e23cffcd0b15b375400", []},
   "certifi": {:hex, :certifi, "2.6.1", "dbab8e5e155a0763eea978c913ca280a6b544bfa115633fa20249c3d396d9493", [:rebar3], [], "hexpm", "524c97b4991b3849dd5c17a631223896272c6b0af446778ba4675a1dff53bb7e"},
   "chacha20": {:hex, :chacha20, "1.0.2", "73c5e96eba5e94917603a43c5c7c6b049436a5d71d9d3182781c345d87d28c8b", [:mix], [], "hexpm", "549b89314cbffa0893ef923d999d625c227cab5f1301133598793225f02a3963"},
   "cowlib": {:hex, :cowlib, "2.7.3", "a7ffcd0917e6d50b4d5fb28e9e2085a0ceb3c97dea310505f7460ff5ed764ce9", [:rebar3], [], "hexpm", "1e1a3d176d52daebbecbbcdfd27c27726076567905c2a9d7398c54da9d225761"},

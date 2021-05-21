@@ -35,12 +35,12 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 		Api.start_typing(message.channel_id)
 
 		weapon_name_simplified = String.replace(weapon_name, [" ", "-"], "") |> String.downcase()
-		with weapon_name_matched when not is_nil(weapon_name_matched) <- Enum.find(CAIBot.get_info(:weapon), & String.replace(&1, [" ", "-"], "") |> String.downcase() |> String.contains?(weapon_name_simplified)),
+		with weapon_name_matched when not is_nil(weapon_name_matched) <- Enum.find(CAIData.API.get_info(:weapon), & String.replace(&1, [" ", "-"], "") |> String.downcase() |> String.contains?(weapon_name_simplified)),
 			query <- char_weapon_stats_query(character_name, weapon_name_matched),
 			{:ok, %QueryResult{data: %{"name" => %{"first" => name}, "w_stats" => w_stats, "w_stats_f" => w_faction_stats}}} <- PS2.API.query_one(query),
 			weapon_stats when weapon_stats != %{} <- build_weapon_stats(w_stats, w_faction_stats) do
 
-				{faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[List.first(w_stats)["weapon"]["faction_id"]]
+				{faction_name, faction_color, faction_logo} = CAIData.API.get_info(:faction)[List.first(w_stats)["weapon"]["faction_id"]]
 
 				base_embed = %Embed{}
 				|> Embed.put_title("#{Utils.grammar_possessive(name)} weapon stats")
@@ -72,7 +72,7 @@ defmodule CAIBot.Commands.PlanetSide.Stats do
 		with query <- char_stats_query(character_name),
 			{:ok, %QueryResult{data: %{"name" => %{"first" => name}, "faction_id" => faction_id, "lt_stats" => lifetime_stats, "f_stats" => faction_stats} = character}} <- PS2.API.query_one(query),
 			character_stats when character_stats != %{} <- build_char_stats(lifetime_stats, faction_stats, Map.get(character, "shot_stats", []), Map.get(character, "weapon_shot_stats", []), Map.get(character, "weapon_f_stats", [])) do
-				{_faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[faction_id]
+				{_faction_name, faction_color, faction_logo} = CAIData.API.get_info(:faction)[faction_id]
 				{lifetime_stats, ivi_stats} = char_stats_desc(character_stats, character)
 
 				embed = %Embed{}

@@ -24,6 +24,7 @@ defmodule CAIBot.MixProject do
     [
 			{:dotenv_parser, "~> 1.2"},
 			{:planetside_api, "~> 0.2.0"},
+			{:caidata_api, github: "Bentheburrito/caidata_api"},
 			{:nostrum, "~> 0.4"},
 			{:nosedrum, "~> 0.3"}
     ]

@@ -21,10 +21,10 @@ defmodule CAIBot.Commands.PlanetSide.Session do
 
   @impl true
 	def command(message, character_name) do
-		case CAIBot.get_data(CAIData, :get_session_by_name, [character_name]) do
-			nil -> Api.create_message!(message.channel_id, "We don't have any session data for that character.")
-			session ->
-				experience_info = CAIBot.get_info(:experience)
+		case CAIData.API.get_session_by_name(character_name) do
+			:none -> Api.create_message!(message.channel_id, "We don't have any session data for that character.")
+			{:ok, session} ->
+				experience_info = CAIData.API.get_info(:experience)
 
 				top_xp_sources = if map_size(session.xp_types) > 0 do
 					Enum.sort(session.xp_types, fn {_xp_id_1, value_1}, {_xp_id_2, value_2} -> value_1 >= value_2 end)
@@ -53,7 +53,15 @@ defmodule CAIBot.Commands.PlanetSide.Session do
   end
 
 	defp general_stats_desc(session) do
-		session_seconds = session.logout_timestamp - session.login_timestamp
+		{session_seconds, logged_out_at} =
+			if session.logout_timestamp == 0 do
+				{(DateTime.now!("Etc/UTC") |> DateTime.to_unix()) - session.login_timestamp,
+				"Session in Progress"}
+			else
+				{session.logout_timestamp - session.login_timestamp,
+				DateTime.from_unix!(session.logout_timestamp)}
+			end
+
 		vehicles_destroyed_card = Enum.map_join(session.vehicles_destroyed, "\n", fn {name, amount} -> "#{amount}x #{name}" end)
 		vehicles_lost_card = Enum.map_join(session.vehicles_lost, "\n", fn {name, amount} -> "#{amount}x #{name}" end)
 
@@ -72,7 +80,7 @@ defmodule CAIBot.Commands.PlanetSide.Session do
 		**Nanites Destroyed:Used** #{session.nanites_destroyed}:#{session.nanites_lost}
 		**--==+==--**
 		**Play Time**: #{Utils.format_unix_offset(session_seconds)}
-		**Last Logout**: #{session.logout_timestamp |> DateTime.from_unix!()}
+		**Logged Out**: #{logged_out_at}
 		"""
 	end
 

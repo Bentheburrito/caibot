@@ -36,7 +36,7 @@ defmodule CAIBot.Commands.PlanetSide.Outfit do
 	defp do_command(message, %Query{} = query) do
 		with {:ok, %QueryResult{data: %{"name" => name, "alias" => tag, "members" => members} = outfit}} <- PS2.API.query_one(query) do
 			faction_id = List.first(members)["character"]["faction_id"]
-			{faction_name, faction_color, faction_logo} = CAIBot.get_info(:faction)[faction_id]
+			{faction_name, faction_color, faction_logo} = CAIData.API.get_info(:faction)[faction_id]
 
 			%{"kills" => outfit_kills, "deaths" => outfit_deaths} = outfit_members_stats(members)
 			outfit_kdr = safe_div(outfit_kills, outfit_deaths)
