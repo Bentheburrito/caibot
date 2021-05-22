@@ -14,7 +14,7 @@ defmodule CAIBot.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-			mod: {CAIBot, []},
+      mod: {CAIBot, []},
       extra_applications: [:logger]
     ]
   end
@@ -22,11 +22,11 @@ defmodule CAIBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-			{:dotenv_parser, "~> 1.2"},
-			{:planetside_api, "~> 0.2.0"},
-			{:caidata_api, github: "Bentheburrito/caidata_api"},
-			{:nostrum, "~> 0.4"},
-			{:nosedrum, "~> 0.3"}
+      {:dotenv_parser, "~> 1.2"},
+      {:planetside_api, "~> 0.2.0"},
+      {:caidata_api, github: "Bentheburrito/caidata_api"},
+      {:nostrum, "~> 0.4"},
+      {:nosedrum, "~> 0.3"}
     ]
   end
 end
