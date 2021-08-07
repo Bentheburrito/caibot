@@ -10,6 +10,5 @@ config :caibot, CAIBot.Repo,
 config :caibot,
   ecto_repos: [CAIBot.Repo]
 
-
 config :nosedrum,
   prefix: "!"
