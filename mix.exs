@@ -26,7 +26,9 @@ defmodule CAIBot.MixProject do
       {:planetside_api, "~> 0.2.0"},
       {:caidata_api, github: "Bentheburrito/caidata_api"},
       {:nostrum, "~> 0.4"},
-      {:nosedrum, "~> 0.3"}
+      {:nosedrum, "~> 0.3"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"}
     ]
   end
 end

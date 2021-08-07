@@ -4,6 +4,7 @@ defmodule CAIBot do
 
   def start(_type, _args) do
     children = [
+      CAIBot.Repo,
       Nosedrum.Storage.ETS,
       CAIBot.ReactionHandler,
       {CAIBot.Consumer, name: CAIBot.Consumer}
